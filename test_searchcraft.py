@@ -90,6 +90,12 @@ class TestQueries(unittest.TestCase):
     def test_stopword_only_query(self):
         self.assertEqual(self.e.search("and the with"), [])
 
+    def test_not_query_with_empty_document(self):
+        e = SearchEngine()
+        e.add_document("python code")
+        empty = e.add_document("")
+        self.assertIn((empty, ""), [(r.doc_id, r.snippet) for r in e.search("NOT java")])
+
 
 class TestDemoRanking(unittest.TestCase):
     """Ranking correctness of the 4 complex demo queries on the 10-document dataset."""

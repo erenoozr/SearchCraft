@@ -422,6 +422,8 @@ class SearchEngine:
 
     def snippet(self, doc_id: int, terms: set[str], window: int = 7) -> str:
         doc = self.index.docs[doc_id]
+        if not doc.spans:
+            return ""  # an empty document can still be returned by a pure NOT query
         hits = {p for t in terms for p in self.index.doc_postings(t).get(doc_id, ())}
         center = min(hits) if hits else 0
         lo, hi = max(0, center - window), min(len(doc.spans) - 1, center + window)
